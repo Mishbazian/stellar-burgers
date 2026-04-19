@@ -22,52 +22,46 @@ const App = () => {
   return (
     <div className={styles.app}>
       <AppHeader />
-      {error ? (
-        <div className={`${styles.error} text text_type_main-medium pt-4`}>
-          {error}
-        </div>
-      ) : (
-        <>
-          <Routes>
-            <Route path='*' element={<NotFound404 />} />
-            <Route path='/'>
-              <Route index element={<ConstructorPage />} />
-              <Route path='feed' element={<Feed />} />
-              <Route path='profile' element={<ProtectedRoute />}>
-                <Route index element={<Profile />} />
-                <Route path='orders' element={<ProfileOrders />} />
-              </Route>
-              <Route element={<ProtectedRoute onlyUnAuth />}>
-                <Route path='login' element={<Login />} />
-                <Route path='register' element={<Register />} />
-                <Route path='forgot-password' element={<ForgotPassword />} />
-                <Route path='reset-password' element={<ResetPassword />} />
-              </Route>
+      <>
+        <Routes>
+          <Route path='/'>
+            <Route index element={<ConstructorPage />} />
+            <Route path='feed' element={<Feed />} />
+            <Route path='profile' element={<ProtectedRoute />}>
+              <Route index element={<Profile />} />
+              <Route path='orders' element={<ProfileOrders />} />
             </Route>
-          </Routes>
+            <Route element={<ProtectedRoute onlyUnAuth />}>
+              <Route path='login' element={<Login />} />
+              <Route path='register' element={<Register />} />
+              <Route path='forgot-password' element={<ForgotPassword />} />
+              <Route path='reset-password' element={<ResetPassword />} />
+            </Route>
+          </Route>
+          <Route path='*' element={<NotFound404 />} />
+        </Routes>
 
-          <Routes>
+        <Routes>
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title={''} onClose={() => navigate(-1)}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route element={<ProtectedRoute />}>
             <Route
-              path='/feed/:number'
+              path='/profile/orders/:number'
               element={
                 <Modal title={''} onClose={() => navigate(-1)}>
                   <OrderInfo />
                 </Modal>
               }
             />
-            <Route element={<ProtectedRoute />}>
-              <Route
-                path='/profile/orders/:number'
-                element={
-                  <Modal title={''} onClose={() => navigate(-1)}>
-                    <OrderInfo />
-                  </Modal>
-                }
-              />
-            </Route>
-          </Routes>
-        </>
-      )}
+          </Route>
+        </Routes>
+      </>
     </div>
   );
 };
