@@ -1,7 +1,7 @@
 import { getIngredientsApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { TIngredient } from '@utils-types';
+import { TIngredient, TIngredientsGroups, TTabMode } from '@utils-types';
 
 type TIngredientsState = {
   ingredients: TIngredient[];
@@ -24,7 +24,14 @@ export const ingredientsSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
-    getIngredientsSelector: (state) => state
+    getIngredientsSelector: (state) => state,
+    getGrouppedIngredients: (state) =>
+      state.ingredients.reduce((acc, item) => {
+        const type = item.type as TTabMode;
+        if (!acc[type]) acc[type] = [];
+        acc[type]?.push(item);
+        return acc;
+      }, {} as TIngredientsGroups)
   },
   extraReducers: (builder) => {
     builder
@@ -44,5 +51,6 @@ export const ingredientsSlice = createSlice({
   }
 });
 
-export const { getIngredientsSelector } = ingredientsSlice.selectors;
+export const { getIngredientsSelector, getGrouppedIngredients } =
+  ingredientsSlice.selectors;
 export const ingredientsReducer = ingredientsSlice.reducer;
