@@ -11,19 +11,30 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
-import { AppHeader, Modal, OrderInfo } from '@components';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import { TITLES } from '../../utils/constants';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'src/services/store';
+import { useEffect } from 'react';
+import { getIngredients } from '@slices';
 
 const App = () => {
-  /** TODO: взять переменные из стора */
-  const error = null;
   const navigate = useNavigate();
+  const location = useLocation();
+  const backgroundLocation = location.state?.background;
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getIngredients());
+  }, []);
   return (
     <div className={styles.app}>
       <AppHeader />
       <>
-        <Routes>
+        <Routes location={backgroundLocation || location}>
           <Route path='/'>
             <Route index element={<ConstructorPage />} />
             <Route path='feed' element={<Feed />} />
@@ -40,27 +51,39 @@ const App = () => {
           </Route>
           <Route path='*' element={<NotFound404 />} />
         </Routes>
-
-        <Routes>
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal title={''} onClose={() => navigate(-1)}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
-          <Route element={<ProtectedRoute />}>
+        {backgroundLocation && (
+          <Routes>
             <Route
-              path='/profile/orders/:number'
+              path='/feed/:number'
               element={
                 <Modal title={''} onClose={() => navigate(-1)}>
                   <OrderInfo />
                 </Modal>
               }
             />
-          </Route>
-        </Routes>
+            <Route
+              path='/ingredients/:id'
+              element={
+                <Modal
+                  title={TITLES.INGREDIENTS_DETAILS}
+                  onClose={() => navigate(-1)}
+                >
+                  <IngredientDetails />
+                </Modal>
+              }
+            />
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path='/profile/orders/:number'
+                element={
+                  <Modal title={''} onClose={() => navigate(-1)}>
+                    <OrderInfo />
+                  </Modal>
+                }
+              />
+            </Route>
+          </Routes>
+        )}
       </>
     </div>
   );
