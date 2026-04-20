@@ -33,6 +33,37 @@ export const constructorSlice = createSlice({
       state.ingredients = state.ingredients.filter(
         (item) => item.id !== action.payload.id
       );
+    },
+    moveItem: (
+      state,
+      action: PayloadAction<{
+        ingredient: TConstructorIngredient;
+        dir: 'up' | 'down';
+      }>
+    ) => {
+      const { ingredient, dir } = action.payload;
+      const startPos: number = state.ingredients.findIndex(
+        (item) => item.id === ingredient.id
+      );
+      if (
+        (dir === 'up' && startPos === 0) ||
+        (dir === 'down' && startPos >= state.ingredients.length - 1)
+      )
+        return;
+      switch (dir) {
+        case 'up':
+          [state.ingredients[startPos], state.ingredients[startPos - 1]] = [
+            state.ingredients[startPos - 1],
+            state.ingredients[startPos]
+          ];
+          break;
+        case 'down':
+          [state.ingredients[startPos], state.ingredients[startPos + 1]] = [
+            state.ingredients[startPos + 1],
+            state.ingredients[startPos]
+          ];
+          break;
+      }
     }
   },
   selectors: {
@@ -41,4 +72,4 @@ export const constructorSlice = createSlice({
 });
 
 export const { getConstructorSelector } = constructorSlice.selectors;
-export const { addItem, removeItem } = constructorSlice.actions;
+export const { addItem, removeItem, moveItem } = constructorSlice.actions;
