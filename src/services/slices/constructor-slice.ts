@@ -30,7 +30,9 @@ export const constructorSlice = createSlice({
       }
     },
     removeItem: (state, action: PayloadAction<TConstructorIngredient>) => {
-      state.ingredients.filter((item) => item.id !== action.payload.id);
+      state.ingredients = state.ingredients.filter(
+        (item) => item.id !== action.payload.id
+      );
     }
   },
   selectors: {
@@ -40,4 +42,3 @@ export const constructorSlice = createSlice({
 
 export const { getConstructorSelector } = constructorSlice.selectors;
 export const { addItem, removeItem } = constructorSlice.actions;
-export default constructorSlice.reducer;
