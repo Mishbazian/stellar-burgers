@@ -11,30 +11,25 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { TITLES } from '../../utils/constants';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/services/store';
+
 import { useEffect } from 'react';
 import { getIngredients } from '@slices';
+import { useDispatch } from '../../services';
 
-const App = () => {
+export const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   //TODO пересмотреть получение номера заказа для заголовка модалки
   //TODO вынести обертку для немодальных страниц в отдельный HOC
   //TODO переписать классы через clsx?
+  //TODO найти причину ререндера App
   const lastUripart: string = location.pathname.split('/').pop() ?? '';
 
   useEffect(() => {
