@@ -24,14 +24,7 @@ export const ingredientsSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
-    getIngredientsSelector: (state) => state,
-    getGrouppedIngredients: (state) =>
-      state.ingredients.reduce((acc, item) => {
-        const type = item.type as TTabMode;
-        if (!acc[type]) acc[type] = [];
-        acc[type]?.push(item);
-        return acc;
-      }, {} as TIngredientsGroups)
+    getIngredientsSelector: (state) => state
   },
   extraReducers: (builder) => {
     builder
@@ -51,6 +44,5 @@ export const ingredientsSlice = createSlice({
   }
 });
 
-export const { getIngredientsSelector, getGrouppedIngredients } =
-  ingredientsSlice.selectors;
+export const { getIngredientsSelector } = ingredientsSlice.selectors;
 export const ingredientsReducer = ingredientsSlice.reducer;
