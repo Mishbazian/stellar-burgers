@@ -4,9 +4,10 @@ import {
   getUserApi,
   loginUserApi,
   logoutApi,
-  registerUserApi
+  registerUserApi,
+  updateUserApi
 } from '@api';
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 //TODO отрефакорить
@@ -41,6 +42,11 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  'user/update',
+  async (data: Partial<TRegisterData>) => updateUserApi(data)
+);
+
 export const getUser = createAsyncThunk('user/get', async () => getUserApi());
 
 type TUserState = {
@@ -48,6 +54,7 @@ type TUserState = {
   isLoading: boolean;
   loginError: string | undefined;
   registerError: string | undefined;
+  updateUserError: string | undefined;
   isInit: boolean;
 };
 const initialState: TUserState = {
@@ -55,6 +62,7 @@ const initialState: TUserState = {
   isLoading: false,
   loginError: undefined,
   registerError: undefined,
+  updateUserError: undefined,
   isInit: false
 };
 
@@ -104,6 +112,19 @@ export const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isInit = true;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.updateUserError = undefined;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.updateUserError = action.error.message;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.isLoading = false;
+        state.updateUserError = undefined;
       });
   }
 });
