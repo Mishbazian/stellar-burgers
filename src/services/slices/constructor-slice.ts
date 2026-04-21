@@ -64,6 +64,9 @@ export const constructorSlice = createSlice({
           ];
           break;
       }
+    },
+    clearConstructor: (state) => {
+      state = initialState;
     }
   },
   selectors: {
@@ -72,4 +75,5 @@ export const constructorSlice = createSlice({
 });
 
 export const { getConstructorSelector } = constructorSlice.selectors;
-export const { addItem, removeItem, moveItem } = constructorSlice.actions;
+export const { addItem, removeItem, moveItem, clearConstructor } =
+  constructorSlice.actions;
