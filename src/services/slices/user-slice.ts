@@ -60,7 +60,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     userLogout: (state) => {
-      state = initialState;
+      state.user = null;
     }
   },
   selectors: {
@@ -95,7 +95,7 @@ export const userSlice = createSlice({
         state.loginError = undefined;
       })
       .addCase(getUser.rejected, (state) => {
-        state = initialState;
+        state.user = null;
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
