@@ -9,7 +9,8 @@ import {
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
-
+//TODO отрефакорить
+//TODO кушить проблему с задержкой редиректа при логауте
 export const loginUser = createAsyncThunk(
   'user/login',
   async ({ email, password }: TLoginData) => {
@@ -47,12 +48,14 @@ type TUserState = {
   isLoading: boolean;
   loginError: string | undefined;
   registerError: string | undefined;
+  isInit: boolean;
 };
 const initialState: TUserState = {
   user: null,
   isLoading: false,
   loginError: undefined,
-  registerError: undefined
+  registerError: undefined,
+  isInit: false
 };
 
 export const userSlice = createSlice({
@@ -96,9 +99,11 @@ export const userSlice = createSlice({
       })
       .addCase(getUser.rejected, (state) => {
         state.user = null;
+        state.isInit = true;
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.isInit = true;
       });
   }
 });

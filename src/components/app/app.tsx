@@ -17,8 +17,9 @@ import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { TITLES } from '../../utils/constants';
 
 import { useEffect } from 'react';
-import { getIngredients } from '@slices';
-import { useDispatch } from '../../services';
+import { getIngredients, getUser, getUserSelector } from '@slices';
+import { useDispatch, useSelector } from '../../services';
+import { getCookie } from '../../utils/cookie';
 
 export const App = () => {
   const navigate = useNavigate();
@@ -31,9 +32,11 @@ export const App = () => {
   //TODO переписать классы через clsx?
   //TODO найти причину ререндера App
   const lastUripart: string = location.pathname.split('/').pop() ?? '';
+  const { isInit } = useSelector(getUserSelector);
 
   useEffect(() => {
     dispatch(getIngredients());
+    if (getCookie('accessToken') && !isInit) dispatch(getUser());
   }, []);
   return (
     <div className={styles.app}>
