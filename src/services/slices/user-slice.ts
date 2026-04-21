@@ -45,12 +45,14 @@ export const getUser = createAsyncThunk('user/get', async () => getUserApi());
 type TUserState = {
   user: TUser | null;
   isLoading: boolean;
-  error: string | undefined;
+  loginError: string | undefined;
+  registerError: string | undefined;
 };
 const initialState: TUserState = {
   user: null,
   isLoading: false,
-  error: undefined
+  loginError: undefined,
+  registerError: undefined
 };
 
 export const userSlice = createSlice({
@@ -69,28 +71,28 @@ export const userSlice = createSlice({
     builder
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
-        state.error = undefined;
+        state.registerError = undefined;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.registerError = action.error.message;
         state.isLoading = false;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isLoading = false;
-        state.error = undefined;
+        state.registerError = undefined;
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
-        state.error = undefined;
+        state.loginError = undefined;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.loginError = action.error.message;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
-        state.error = undefined;
+        state.loginError = undefined;
       })
       .addCase(getUser.rejected, (state) => {
         state = initialState;
