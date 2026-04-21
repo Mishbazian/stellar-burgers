@@ -11,7 +11,13 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { TITLES } from '../../utils/constants';
@@ -26,6 +32,10 @@ const App = () => {
   const backgroundLocation = location.state?.background;
 
   const dispatch = useDispatch<AppDispatch>();
+  //TODO пересмотреть получение номера заказа для заголовка модалки
+  //TODO вынести обертку для немодальных страниц в отдельный HOC
+  //TODO переписать классы через clsx?
+  const lastUripart: string = location.pathname.split('/').pop() ?? '';
 
   useEffect(() => {
     dispatch(getIngredients());
@@ -48,6 +58,17 @@ const App = () => {
               <Route path='forgot-password' element={<ForgotPassword />} />
               <Route path='reset-password' element={<ResetPassword />} />
             </Route>
+            <Route
+              path='/feed/:number'
+              element={
+                <div className={styles.detailPageWrap}>
+                  <h2
+                    className={`${styles.detailHeader} text text_type_main-large`}
+                  >{`#${lastUripart}`}</h2>
+                  <OrderInfo />
+                </div>
+              }
+            />
           </Route>
           <Route path='*' element={<NotFound404 />} />
         </Routes>
@@ -56,7 +77,7 @@ const App = () => {
             <Route
               path='/feed/:number'
               element={
-                <Modal title={''} onClose={() => navigate(-1)}>
+                <Modal title={`#${lastUripart}`} onClose={() => navigate(-1)}>
                   <OrderInfo />
                 </Modal>
               }
