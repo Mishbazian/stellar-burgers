@@ -1,4 +1,9 @@
-import { getFeedsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
+import {
+  getFeedsApi,
+  getOrderByNumberApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '@api';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TIngredient, TOrder, TOrdersData } from '@utils-types';
 type TOrderSliceState = TOrdersData & {
@@ -6,6 +11,7 @@ type TOrderSliceState = TOrdersData & {
   isSending: boolean;
   error: string | null;
   newOrder: TOrder | null;
+  userOrders: TOrder[];
 };
 
 const initialState: TOrderSliceState = {
@@ -15,7 +21,8 @@ const initialState: TOrderSliceState = {
   isLoading: false,
   isSending: false,
   error: null,
-  newOrder: null
+  newOrder: null,
+  userOrders: []
 };
 
 export const getFeed = createAsyncThunk('orders/getAll', async () =>
@@ -35,15 +42,28 @@ export const createOrder = createAsyncThunk(
     })
 );
 
+export const getUserOrders = createAsyncThunk(
+  'orders/user/get',
+  async (_, { dispatch }) =>
+    getOrdersApi().then((data) => {
+      dispatch(setUserOrders(data));
+    })
+);
+
 export const ordersSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    setUserOrders: (state, action: PayloadAction<TOrder[]>) => {
+      state.userOrders = action.payload;
+    }
+  },
   selectors: {
     getFeedSelector: (state) => state,
     getOrdersSelector: (state) => state.orders,
     isOrderSendingSelector: (state) => state.isSending,
-    getNewOrderSelector: (state) => state.newOrder
+    getNewOrderSelector: (state) => state.newOrder,
+    getUserOrdersSelector: (state) => state.userOrders
   },
   extraReducers: (builder) => {
     builder
@@ -98,5 +118,8 @@ export const {
   getFeedSelector,
   getOrdersSelector,
   isOrderSendingSelector,
-  getNewOrderSelector
+  getNewOrderSelector,
+  getUserOrdersSelector
 } = ordersSlice.selectors;
+
+const { setUserOrders } = ordersSlice.actions;
