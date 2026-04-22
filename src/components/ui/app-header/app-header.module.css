@@ -35,3 +35,6 @@
   align-items: center;
   margin: 0 auto;
 }
+.link svg {
+  fill: currentColor;
+}
