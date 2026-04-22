@@ -11,7 +11,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 //TODO отрефакорить
-//TODO кушить проблему с задержкой редиректа при логауте
+//TODO решить проблему с задержкой редиректа при логауте
 export const loginUser = createAsyncThunk(
   'user/login',
   async ({ email, password }: TLoginData) => {
@@ -35,7 +35,7 @@ export const registerUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'user/logout',
   async (_, { dispatch }) => {
-    await logoutApi();
+    logoutApi();
     localStorage.removeItem('refreshToken'); // очищаем refreshToken
     deleteCookie('accessToken'); // очищаем accessToken
     dispatch(userLogout()); // удаляем пользователя из хранилища
@@ -104,6 +104,7 @@ export const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.loginError = undefined;
+        state.isLoading = false;
       })
       .addCase(getUser.rejected, (state) => {
         state.user = null;
