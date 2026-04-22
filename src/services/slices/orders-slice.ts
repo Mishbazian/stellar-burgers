@@ -1,9 +1,11 @@
-import { getFeedsApi, getOrderByNumberApi } from '@api';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { TOrder, TOrdersData } from '@utils-types';
+import { getFeedsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { TIngredient, TOrder, TOrdersData } from '@utils-types';
 type TOrderSliceState = TOrdersData & {
   isLoading: boolean;
+  isSending: boolean;
   error: string | null;
+  newOrder: TOrder | null;
 };
 
 const initialState: TOrderSliceState = {
@@ -11,7 +13,9 @@ const initialState: TOrderSliceState = {
   total: 0,
   totalToday: 0,
   isLoading: false,
-  error: null
+  isSending: false,
+  error: null,
+  newOrder: null
 };
 
 export const getFeed = createAsyncThunk('orders/getAll', async () =>
@@ -22,6 +26,14 @@ export const getOrderByNumber = createAsyncThunk(
   'orders/getById',
   async (number: number) => getOrderByNumberApi(number)
 );
+export const createOrder = createAsyncThunk(
+  'orders/create',
+  async (data: TIngredient[]) =>
+    orderBurgerApi(data.map((item) => item._id)).then((data) => {
+      const newOrder: TOrder = { ...data.order };
+      return newOrder;
+    })
+);
 
 export const ordersSlice = createSlice({
   name: 'orders',
@@ -29,7 +41,9 @@ export const ordersSlice = createSlice({
   reducers: {},
   selectors: {
     getFeedSelector: (state) => state,
-    getOrdersSelector: (state) => state.orders
+    getOrdersSelector: (state) => state.orders,
+    isOrderSendingSelector: (state) => state.isSending,
+    getNewOrderSelector: (state) => state.newOrder
   },
   extraReducers: (builder) => {
     builder
@@ -66,8 +80,23 @@ export const ordersSlice = createSlice({
           state.orders.push(action.payload.orders[0]);
         }
         state.isLoading = false;
+      })
+      .addCase(createOrder.pending, (state) => {
+        state.isSending = true;
+      })
+      .addCase(createOrder.rejected, (state) => {
+        state.isSending = false;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.isSending = false;
+        state.newOrder = action.payload;
       });
   }
 });
 
-export const { getFeedSelector, getOrdersSelector } = ordersSlice.selectors;
+export const {
+  getFeedSelector,
+  getOrdersSelector,
+  isOrderSendingSelector,
+  getNewOrderSelector
+} = ordersSlice.selectors;
