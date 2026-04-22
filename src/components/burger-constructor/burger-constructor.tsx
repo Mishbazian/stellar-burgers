@@ -7,6 +7,7 @@ import {
   createOrder,
   getConstructorSelector,
   getNewOrderSelector,
+  getUserSelector,
   isOrderSendingSelector
 } from '@slices';
 import { useDispatch, useSelector } from '../../services';
@@ -18,9 +19,14 @@ export const BurgerConstructor: FC = () => {
   const navigate = useNavigate();
   const orderRequest = useSelector(isOrderSendingSelector);
   const orderModalData = useSelector(getNewOrderSelector);
+  const { user } = useSelector(getUserSelector);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+    if (!user) {
+      navigate('login');
+      return;
+    }
     dispatch(
       createOrder([
         ...constructorItems.ingredients,
