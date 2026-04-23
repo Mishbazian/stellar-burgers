@@ -27,14 +27,10 @@ const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
-
   const dispatch = useDispatch();
-  //TODO пересмотреть получение номера заказа для заголовка модалки
-  //TODO переписать классы через clsx?
-  //TODO найти причину ререндера App
   const lastUripart: string = location.pathname.split('/').pop() ?? '';
-  const { isInit } = useSelector(getUserSelector);
 
+  const { isInit } = useSelector(getUserSelector);
   useEffect(() => {
     dispatch(getIngredients());
     if (getCookie('accessToken') && !isInit) dispatch(getUser());

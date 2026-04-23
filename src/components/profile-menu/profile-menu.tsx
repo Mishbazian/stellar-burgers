@@ -6,7 +6,6 @@ import { logoutUser, useDispatch } from '../../services';
 export const ProfileMenu: FC = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
-  //todo
   const handleLogout = () => {
     dispatch(logoutUser());
   };

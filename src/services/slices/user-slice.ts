@@ -10,8 +10,6 @@ import {
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
-//TODO отрефакорить
-//TODO решить проблему с задержкой редиректа при логауте
 export const loginUser = createAsyncThunk(
   'user/login',
   async ({ email, password }: TLoginData) => {

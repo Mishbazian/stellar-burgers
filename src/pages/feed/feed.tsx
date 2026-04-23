@@ -9,7 +9,6 @@ import {
 } from '../../services';
 
 export const Feed: FC = () => {
-  /** TODO: взять переменную из стора */
   const { isLoading, orders } = useSelector(getFeedSelector);
   const dispatch = useDispatch();
 
@@ -17,16 +16,18 @@ export const Feed: FC = () => {
     dispatch(getFeed());
   }, []);
 
-  if (isLoading) {
-    return <Preloader />;
-  }
-
   return (
-    <FeedUI
-      orders={orders}
-      handleGetFeeds={() => {
-        dispatch(getFeed());
-      }}
-    />
+    <>
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <FeedUI
+          orders={orders}
+          handleGetFeeds={() => {
+            dispatch(getFeed());
+          }}
+        />
+      )}
+    </>
   );
 };

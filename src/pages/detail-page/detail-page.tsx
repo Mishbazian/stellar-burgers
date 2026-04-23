@@ -8,9 +8,9 @@ type TDetailPageProps = {
 };
 export const DetailPage: FC<TDetailPageProps> = ({ title, children }) => (
   <div className={styles.detailPageWrap}>
-    <h2 className={`${styles.detailHeader} text text_type_main-large`}>
+    <h1 className={`${styles.detailHeader} text text_type_main-large`}>
       {title}
-    </h2>
+    </h1>
     {children}
   </div>
 );

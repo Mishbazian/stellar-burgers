@@ -4,8 +4,12 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
-import { ingredientsSlice, constructorSlice, ordersSlice } from '@slices';
-import { userSlice } from './slices/user-slice';
+import {
+  ingredientsSlice,
+  constructorSlice,
+  ordersSlice,
+  userSlice
+} from '@slices';
 
 const rootReducer = combineSlices(
   ingredientsSlice,
@@ -14,7 +18,7 @@ const rootReducer = combineSlices(
   userSlice
 );
 
-export const store = configureStore({
+const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });

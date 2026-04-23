@@ -9,7 +9,6 @@ import {
 import { Preloader } from '@ui';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
   const { user, isLoading, updateUserError } = useSelector(getUserSelector);
   const dispatch = useDispatch();
 
