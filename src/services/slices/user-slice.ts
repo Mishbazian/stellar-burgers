@@ -30,14 +30,8 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const logoutUser = createAsyncThunk(
-  'user/logout',
-  async (_, { dispatch }) => {
-    logoutApi();
-    localStorage.removeItem('refreshToken'); // очищаем refreshToken
-    deleteCookie('accessToken'); // очищаем accessToken
-    dispatch(userLogout()); // удаляем пользователя из хранилища
-  }
+export const logoutUser = createAsyncThunk('user/logout', async () =>
+  logoutApi()
 );
 
 export const updateUser = createAsyncThunk(
@@ -53,6 +47,7 @@ type TUserState = {
   loginError: string | undefined;
   registerError: string | undefined;
   updateUserError: string | undefined;
+  logoutError: string | undefined;
   isInit: boolean;
 };
 const initialState: TUserState = {
@@ -61,17 +56,14 @@ const initialState: TUserState = {
   loginError: undefined,
   registerError: undefined,
   updateUserError: undefined,
+  logoutError: undefined,
   isInit: false
 };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    userLogout: (state) => {
-      state.user = null;
-    }
-  },
+  reducers: {},
   selectors: {
     getUserSelector: (state) => state,
     getUsernameSelector: (state) => state.user?.name
@@ -124,9 +116,23 @@ export const userSlice = createSlice({
         state.user = action.payload.user;
         state.isLoading = false;
         state.updateUserError = undefined;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+        state.logoutError = undefined;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.logoutError = action.error.message;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
+        state.user = null;
+        state.isLoading = false;
+        state.logoutError = undefined;
+        localStorage.removeItem('refreshToken'); // очищаем refreshToken
+        deleteCookie('accessToken'); // очищаем accessToken
       });
   }
 });
 
 export const { getUserSelector, getUsernameSelector } = userSlice.selectors;
-const { userLogout } = userSlice.actions;
