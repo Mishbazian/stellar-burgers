@@ -8,9 +8,9 @@ import {
   registerUserApi,
   updateUserApi
 } from '@api';
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { deleteCookie, setCookie } from '../../utils/cookie';
+import { deleteCookie, getCookie, setCookie } from '../../utils/cookie';
 
 const setClientUser = (userData: TAuthResponse) => {
   localStorage.setItem('refreshToken', userData.refreshToken);
@@ -37,7 +37,11 @@ export const updateUser = createAsyncThunk(
   async (data: Partial<TRegisterData>) => updateUserApi(data)
 );
 
-export const getUser = createAsyncThunk('user/get', async () => getUserApi());
+export const getUser = createAsyncThunk('user/get', async () => {
+  if (getCookie('accessToken') && localStorage.getItem('refreshToken'))
+    return getUserApi();
+  return Promise.reject();
+});
 
 type TUserState = {
   user: TUser | null;

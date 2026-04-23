@@ -33,7 +33,7 @@ const App = () => {
   const { isInit } = useSelector(getUserSelector);
   useEffect(() => {
     dispatch(getIngredients());
-    if (getCookie('accessToken') && !isInit) dispatch(getUser());
+    if (!isInit) dispatch(getUser());
   }, []);
   return (
     <>
