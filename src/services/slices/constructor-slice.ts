@@ -66,7 +66,8 @@ export const constructorSlice = createSlice({
       }
     },
     clearConstructor: (state) => {
-      state = initialState;
+      state.bun = null;
+      state.ingredients = [];
     }
   },
   selectors: {
