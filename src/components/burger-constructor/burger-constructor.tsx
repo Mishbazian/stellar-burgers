@@ -1,9 +1,10 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
 import {
   clearConstructor,
+  clearNewOrder,
   createOrder,
   getConstructorSelector,
   getNewOrderSelector,
@@ -21,6 +22,12 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(getNewOrderSelector);
   const { user } = useSelector(getUserSelector);
 
+  useEffect(() => {
+    if (orderModalData) {
+      dispatch(clearConstructor());
+    }
+  }, [orderModalData]);
+
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
     if (!user) {
@@ -36,8 +43,7 @@ export const BurgerConstructor: FC = () => {
     );
   };
   const closeOrderModal = () => {
-    dispatch(clearConstructor());
-    navigate('/feed');
+    if (orderModalData) dispatch(clearNewOrder());
   };
 
   const price = useMemo(
