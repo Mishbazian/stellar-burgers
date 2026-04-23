@@ -1,4 +1,5 @@
 import {
+  TAuthResponse,
   TLoginData,
   TRegisterData,
   getUserApi,
@@ -7,27 +8,24 @@ import {
   registerUserApi,
   updateUserApi
 } from '@api';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
+
+const setClientUser = (userData: TAuthResponse) => {
+  localStorage.setItem('refreshToken', userData.refreshToken);
+  setCookie('accessToken', userData.accessToken);
+};
+
 export const loginUser = createAsyncThunk(
   'user/login',
-  async ({ email, password }: TLoginData) => {
-    const userData = await loginUserApi({ email, password });
-    localStorage.setItem('refreshToken', userData.refreshToken);
-    setCookie('accessToken', userData.accessToken);
-    return userData;
-  }
+  async ({ email, password }: TLoginData) => loginUserApi({ email, password })
 );
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async ({ email, name, password }: TRegisterData) => {
-    const userData = await registerUserApi({ email, name, password });
-    localStorage.setItem('refreshToken', userData.refreshToken);
-    setCookie('accessToken', userData.accessToken);
-    return userData;
-  }
+  async ({ email, name, password }: TRegisterData) =>
+    registerUserApi({ email, name, password })
 );
 
 export const logoutUser = createAsyncThunk('user/logout', async () =>
@@ -82,6 +80,7 @@ export const userSlice = createSlice({
         state.user = action.payload.user;
         state.isLoading = false;
         state.registerError = undefined;
+        setClientUser(action.payload);
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -95,6 +94,7 @@ export const userSlice = createSlice({
         state.user = action.payload.user;
         state.loginError = undefined;
         state.isLoading = false;
+        setClientUser(action.payload);
       })
       .addCase(getUser.rejected, (state) => {
         state.user = null;
