@@ -2,6 +2,7 @@ import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
 import { FC, useEffect } from 'react';
 import {
+  clearNewOrder,
   getFeed,
   getFeedSelector,
   useDispatch,
@@ -14,6 +15,9 @@ export const Feed: FC = () => {
 
   useEffect(() => {
     dispatch(getFeed());
+    setTimeout(() => {
+      dispatch(clearNewOrder());
+    }, 5000);
   }, []);
 
   return (

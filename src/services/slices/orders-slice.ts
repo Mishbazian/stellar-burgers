@@ -56,6 +56,9 @@ export const ordersSlice = createSlice({
   reducers: {
     setUserOrders: (state, action: PayloadAction<TOrder[]>) => {
       state.userOrders = action.payload;
+    },
+    clearNewOrder: (state) => {
+      state.newOrder = null;
     }
   },
   selectors: {
@@ -122,4 +125,4 @@ export const {
   getUserOrdersSelector
 } = ordersSlice.selectors;
 
-const { setUserOrders } = ordersSlice.actions;
+export const { setUserOrders, clearNewOrder } = ordersSlice.actions;
