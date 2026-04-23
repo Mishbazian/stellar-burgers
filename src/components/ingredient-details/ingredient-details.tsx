@@ -2,8 +2,8 @@ import { FC } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { getIngredientsSelector } from '@slices';
+import { useSelector } from '../../services';
 
 export const IngredientDetails: FC = () => {
   const { id } = useParams<'id'>();
