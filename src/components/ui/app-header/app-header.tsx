@@ -9,17 +9,18 @@ import {
 } from '@zlden/react-developer-burger-ui-components';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
+
+const setNavLinkClass =
+  () =>
+  ({ isActive }: { isActive: boolean }) =>
+    clsx(styles.link, isActive ? styles.link_active : '');
+
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
         <>
-          <NavLink
-            to={'/'}
-            className={({ isActive }) =>
-              clsx(styles.link, isActive ? styles.link_active : '')
-            }
-          >
+          <NavLink to={'/'} className={setNavLinkClass()}>
             <BurgerIcon type={'primary'} />
 
             <p className='text text_type_main-default ml-2 mr-10'>
@@ -28,12 +29,7 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
           </NavLink>
         </>
         <>
-          <NavLink
-            to={'feed'}
-            className={({ isActive }) =>
-              clsx(styles.link, isActive ? styles.link_active : '')
-            }
-          >
+          <NavLink to={'feed'} className={setNavLinkClass()}>
             <ListIcon type={'primary'} />
 
             <p className='text text_type_main-default ml-2'>Лента заказов</p>
@@ -46,12 +42,7 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
 
       <div className={styles.link_position_last}>
         {' '}
-        <NavLink
-          to={'profile'}
-          className={({ isActive }) =>
-            clsx(styles.link, isActive ? styles.link_active : '')
-          }
-        >
+        <NavLink to={'profile'} className={setNavLinkClass()}>
           <ProfileIcon type={'primary'} />{' '}
           <p className='text text_type_main-default ml-2'>
             {userName || 'Личный кабинет'}
