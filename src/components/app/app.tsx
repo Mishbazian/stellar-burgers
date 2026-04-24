@@ -1,33 +1,125 @@
-import { ConstructorPage } from '@pages';
+import {
+  ConstructorPage,
+  Feed,
+  ForgotPassword,
+  Login,
+  NotFound404,
+  Profile,
+  ProfileOrders,
+  Register,
+  ResetPassword,
+  DetailPage
+} from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route';
+import { IngredientDetails, Modal, OrderInfo } from '@components';
+import { TITLES } from '../../utils/constants';
 
-import { AppHeader } from '@components';
-import { Preloader } from '@ui';
+import { useEffect } from 'react';
+import { getIngredients, getUser, getUserSelector } from '@slices';
+import { useDispatch, useSelector } from '../../services';
+import { getCookie } from '../../utils/cookie';
+import AppLayout from '../../layouts/app-layout';
 
 const App = () => {
-  /** TODO: взять переменные из стора */
-  const isIngredientsLoading = false;
-  const ingredients = [];
-  const error = null;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const backgroundLocation = location.state?.background;
+  const dispatch = useDispatch();
+  const lastUripart: string = location.pathname.split('/').pop() ?? '';
 
+  const { isInit } = useSelector(getUserSelector);
+  useEffect(() => {
+    dispatch(getIngredients());
+    if (!isInit) dispatch(getUser());
+  }, []);
   return (
-    <div className={styles.app}>
-      <AppHeader />
-      {isIngredientsLoading ? (
-        <Preloader />
-      ) : error ? (
-        <div className={`${styles.error} text text_type_main-medium pt-4`}>
-          {error}
-        </div>
-      ) : ingredients.length > 0 ? (
-        <ConstructorPage />
-      ) : (
-        <div className={`${styles.title} text text_type_main-medium pt-4`}>
-          Нет игредиентов
-        </div>
+    <>
+      <Routes location={backgroundLocation || location}>
+        <Route path='/' element={<AppLayout />}>
+          <Route index element={<ConstructorPage />} />
+          <Route path='feed' element={<Feed />} />
+          <Route
+            path='ingredients/:id'
+            element={
+              <DetailPage title={TITLES.INGREDIENTS_DETAILS}>
+                <IngredientDetails />
+              </DetailPage>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <DetailPage title={`#${lastUripart}`}>
+                <OrderInfo />
+              </DetailPage>
+            }
+          />
+
+          <Route path='profile' element={<ProtectedRoute />}>
+            <Route index element={<Profile />} />
+            <Route path='orders' element={<ProfileOrders />} />
+            <Route
+              path='orders/:number'
+              element={
+                <DetailPage title={`#${lastUripart}`}>
+                  <OrderInfo />
+                </DetailPage>
+              }
+            />
+          </Route>
+          <Route element={<ProtectedRoute onlyUnAuth />}>
+            <Route path='login' element={<Login />} />
+            <Route path='register' element={<Register />} />
+            <Route path='forgot-password' element={<ForgotPassword />} />
+            <Route path='reset-password' element={<ResetPassword />} />
+          </Route>
+          <Route path='*' element={<NotFound404 />} />
+        </Route>
+      </Routes>
+
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal
+                title={`#${lastUripart}`}
+                onClose={() => navigate(backgroundLocation)}
+              >
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='ingredients/:id'
+            element={
+              <Modal
+                title={TITLES.INGREDIENTS_DETAILS}
+                onClose={() => navigate(backgroundLocation)}
+              >
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path='/profile/orders/:number'
+              element={
+                <Modal
+                  title={`#${lastUripart}`}
+                  onClose={() => navigate(backgroundLocation)}
+                >
+                  <OrderInfo />
+                </Modal>
+              }
+            />
+          </Route>
+        </Routes>
       )}
-    </div>
+    </>
   );
 };
 

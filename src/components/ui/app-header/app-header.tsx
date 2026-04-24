@@ -7,29 +7,40 @@ import {
   Logo,
   ProfileIcon
 } from '@zlden/react-developer-burger-ui-components';
+import { IconNavLink } from '../icon-nav-link/icon-nav-link';
 
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
-        <>
-          <BurgerIcon type={'primary'} />
-          <p className='text text_type_main-default ml-2 mr-10'>Конструктор</p>
-        </>
-        <>
-          <ListIcon type={'primary'} />
-          <p className='text text_type_main-default ml-2'>Лента заказов</p>
-        </>
+        <IconNavLink
+          to={'/'}
+          icon={BurgerIcon}
+          classNameConst={styles.link}
+          classNameActive={styles.link_active}
+          text={'Конструктор'}
+          textClassName='text text_type_main-default ml-2 mr-10'
+        />
+        <IconNavLink
+          to={'feed'}
+          icon={ListIcon}
+          classNameConst={styles.link}
+          classNameActive={styles.link_active}
+          text={'Лента заказов'}
+          textClassName='text text_type_main-default ml-2'
+        />
       </div>
       <div className={styles.logo}>
         <Logo className='' />
       </div>
-      <div className={styles.link_position_last}>
-        <ProfileIcon type={'primary'} />
-        <p className='text text_type_main-default ml-2'>
-          {userName || 'Личный кабинет'}
-        </p>
-      </div>
+      <IconNavLink
+        to={'profile'}
+        icon={ProfileIcon}
+        classNameConst={[styles.link, styles.link_position_last]}
+        classNameActive={styles.link_active}
+        text={userName || 'Личный кабинет'}
+        textClassName='text text_type_main-default ml-2'
+      />
     </nav>
   </header>
 );
