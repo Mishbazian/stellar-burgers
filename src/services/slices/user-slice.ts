@@ -12,24 +12,35 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, getCookie, setCookie } from '../../utils/cookie';
 
-const setClientUser = (userData: TAuthResponse) => {
+const setClientUser = (userData: TAuthResponse): void => {
   localStorage.setItem('refreshToken', userData.refreshToken);
   setCookie('accessToken', userData.accessToken);
 };
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  async ({ email, password }: TLoginData) => loginUserApi({ email, password })
+  async ({ email, password }: TLoginData): Promise<TUser> =>
+    loginUserApi({ email, password }).then((userData) => {
+      setClientUser(userData);
+      return userData.user;
+    })
 );
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async ({ email, name, password }: TRegisterData) =>
-    registerUserApi({ email, name, password })
+  async ({ email, name, password }: TRegisterData): Promise<TUser> =>
+    registerUserApi({ email, name, password }).then((userData) => {
+      setClientUser(userData);
+      return userData.user;
+    })
 );
 
 export const logoutUser = createAsyncThunk('user/logout', async () =>
-  logoutApi()
+  logoutApi().then(() => {
+    localStorage.removeItem('refreshToken');
+    deleteCookie('accessToken');
+    return;
+  })
 );
 
 export const updateUser = createAsyncThunk(
@@ -81,10 +92,9 @@ export const userSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.isLoading = false;
         state.registerError = undefined;
-        setClientUser(action.payload);
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -95,10 +105,9 @@ export const userSlice = createSlice({
         state.loginError = action.error.message;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.loginError = undefined;
         state.isLoading = false;
-        setClientUser(action.payload);
       })
       .addCase(getUser.rejected, (state) => {
         state.user = null;
@@ -129,12 +138,10 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.logoutError = action.error.message;
       })
-      .addCase(logoutUser.fulfilled, (state, action) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isLoading = false;
         state.logoutError = undefined;
-        localStorage.removeItem('refreshToken'); // очищаем refreshToken
-        deleteCookie('accessToken'); // очищаем accessToken
       });
   }
 });
