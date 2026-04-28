@@ -1,4 +1,8 @@
 node_modules
 .env
 .idea
+.vscode
+
 dist
+.husky
+package-lock.json
