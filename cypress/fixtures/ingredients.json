@@ -1,0 +1,122 @@
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "58a843b2ba1144848ac8b221",
+      "name": "Батон ячневый",
+      "type": "bun",
+      "proteins": 80,
+      "fat": 24,
+      "carbohydrates": 53,
+      "calories": 420,
+      "price": 1255,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image1.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b222",
+      "name": "Котлета и тчкзпт",
+      "type": "main",
+      "proteins": 420,
+      "fat": 142,
+      "carbohydrates": 242,
+      "calories": 4242,
+      "price": 424,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image2.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b223",
+      "name": "Филе, кожа и кости",
+      "type": "main",
+      "proteins": 44,
+      "fat": 26,
+      "carbohydrates": 85,
+      "calories": 643,
+      "price": 988,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image3.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b224",
+      "name": "Соус просто соус",
+      "type": "sauce",
+      "proteins": 30,
+      "fat": 20,
+      "carbohydrates": 40,
+      "calories": 30,
+      "price": 90,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image4.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b225",
+      "name": "Соус жидкий",
+      "type": "sauce",
+      "proteins": 50,
+      "fat": 22,
+      "carbohydrates": 11,
+      "calories": 14,
+      "price": 80,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image4.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b226",
+      "name": "Мясо рыбы",
+      "type": "main",
+      "proteins": 433,
+      "fat": 244,
+      "carbohydrates": 33,
+      "calories": 420,
+      "price": 1337,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image5.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b227",
+      "name": "Котлета отпускная",
+      "type": "main",
+      "proteins": 800,
+      "fat": 800,
+      "carbohydrates": 300,
+      "calories": 2674,
+      "price": 3000,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image6.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b228",
+      "name": "Бул-ка",
+      "type": "bun",
+      "proteins": 44,
+      "fat": 26,
+      "carbohydrates": 85,
+      "calories": 643,
+      "price": 988,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image7.jpg"
+    },
+    {
+      "_id": "58a843b2ba1144848ac8b229",
+      "name": "Соус поми-дорный ",
+      "type": "sauce",
+      "proteins": 42,
+      "fat": 24,
+      "carbohydrates": 42,
+      "calories": 99,
+      "price": 15,
+      "image": "",
+      "image_mobile": "",
+      "image_large": "path/to/large-image8.jpg"
+    }
+  ]
+}
