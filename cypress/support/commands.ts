@@ -35,3 +35,19 @@
 //     }
 //   }
 // }
+declare namespace Cypress {
+  interface Chainable<Subject = any> {
+    /**
+     * Добавляет ингредиент в конструктор
+     * @param id — id ингредиента
+     */
+    addIngredient(id: string): Chainable<void>;
+  }
+}
+
+Cypress.Commands.add('addIngredient', (id) => {
+  cy.get(`[data-testid="ingredient:${id}"]`)
+    .find('button')
+    .contains('Добавить')
+    .click();
+});
