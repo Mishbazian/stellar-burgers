@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { TIngredient } from '../../src/utils/types';
+import { TBun, TIngredient } from '../../src/utils/types';
 describe('e2e тест конструктора бургеров', () => {
   let ingredientsData: { success: boolean; data: TIngredient[] } = {
     success: false,
@@ -18,10 +18,9 @@ describe('e2e тест конструктора бургеров', () => {
       body: ingredientsData
     }).as('getIngredients');
     cy.visit('/');
-    cy.wait('@getIngredients');
+    cy.wait('@getIngredients').its('response.statusCode').should('eq', 200);
   });
-
-  it('[#1]На страницу конструктора загружаются ингредиенты', () => {
+  it('[#1.1]На страницу конструктора загружаются ингредиенты', () => {
     cy.get('[data-testid^="ingredient:"]').should(
       'have.length',
       ingredientsData.data.length
@@ -67,6 +66,66 @@ describe('e2e тест конструктора бургеров', () => {
           cy.get('img').should('have.attr', 'src', image_large);
           cy.get('[data-testid="modal:close"]').click();
         });
+    });
+  });
+  describe('[#3] Добавление ингредиентов в конструктор', () => {
+    let mains: TIngredient[];
+    let buns: TIngredient[];
+    let sauces: TIngredient[];
+    let addedIngredients: TIngredient[];
+    let addedBun: TBun | null;
+    before(() => {
+      buns = ingredientsData.data.filter((item) => item.type === 'bun');
+      sauces = ingredientsData.data.filter((item) => item.type === 'sauce');
+      mains = ingredientsData.data.filter((item) => item.type === 'main');
+    });
+    beforeEach(() => {
+      addedIngredients = [];
+      addedBun = null;
+    });
+    it('[#3.1] Можно добавить несколько начинок несколько раз', () => {
+      mains.forEach((el) => {
+        for (let i = 1; i <= 2; i++) {
+          cy.get(`[data-testid="ingredient:${el._id}"]`)
+            .find('button')
+            .contains('Добавить')
+            .click();
+          addedIngredients.push(el);
+          cy.get('.constructor-element').should(
+            'have.length',
+            addedIngredients.length
+          );
+        }
+      });
+    });
+    it('[#3.2] Можно добавить несколько соусов несколько раз', () => {
+      sauces.forEach((el) => {
+        for (let i = 1; i <= 2; i++) {
+          cy.get(`[data-testid="ingredient:${el._id}"]`)
+            .find('button')
+            .contains('Добавить')
+            .click();
+          addedIngredients.push(el);
+          cy.get('.constructor-element').should(
+            'have.length',
+            addedIngredients.length
+          );
+        }
+      });
+    });
+    it('[#3.3] Можно добавить только одну булочку', () => {
+      buns.forEach((el) => {
+        cy.get(`[data-testid="ingredient:${el._id}"]`)
+          .find('button')
+          .contains('Добавить')
+          .click();
+        cy.get('.constructor-element_pos_top')
+          .should('have.length', 1)
+          .contains(el.name);
+        cy.get('.constructor-element_pos_bottom')
+          .should('have.length', 1)
+          .contains(el.name);
+      });
     });
   });
 });
