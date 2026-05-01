@@ -181,6 +181,10 @@ describe('Тест конструктора бургеров', () => {
       //Ждем загрузки польователя
       cy.wait('@getUser').its('response.statusCode').should('eq', 200);
     });
+    afterEach(() => {
+      cy.clearAllCookies();
+      cy.clearLocalStorage();
+    });
     describe('[4] Заказ', () => {
       it('[#4.2]Авторизованный пользователь может оформить заказ, конструктор очищается', () => {
         let orderNaumber: number;
