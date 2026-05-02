@@ -16,8 +16,8 @@ const initialState: TIngredientsState = {
 };
 
 export const getIngredients = createAsyncThunk('ingredients/getAll', async () =>
-  getIngredientsApi().then((data) => {
-    return data.map((item) => ({
+  getIngredientsApi().then((data) =>
+    data.map((item) => ({
       _id: item._id,
       name: item.name,
       type: item.type,
@@ -29,8 +29,8 @@ export const getIngredients = createAsyncThunk('ingredients/getAll', async () =>
       image: item.image,
       image_large: item.image_large,
       image_mobile: item.image_mobile
-    }));
-  })
+    }))
+  )
 );
 
 export const ingredientsSlice = createSlice({
