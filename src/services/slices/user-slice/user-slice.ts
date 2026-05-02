@@ -10,7 +10,7 @@ import {
 } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { deleteCookie, getCookie, setCookie } from '../../utils/cookie';
+import { deleteCookie, getCookie, setCookie } from '../../../utils/cookie';
 
 const setClientUser = (userData: TAuthResponse): void => {
   localStorage.setItem('refreshToken', userData.refreshToken);
