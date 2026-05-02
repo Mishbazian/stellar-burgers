@@ -16,7 +16,21 @@ const initialState: TIngredientsState = {
 };
 
 export const getIngredients = createAsyncThunk('ingredients/getAll', async () =>
-  getIngredientsApi()
+  getIngredientsApi().then((data) => {
+    return data.map((item) => ({
+      _id: item._id,
+      name: item.name,
+      type: item.type,
+      proteins: item.proteins,
+      fat: item.fat,
+      carbohydrates: item.carbohydrates,
+      calories: item.calories,
+      price: item.price,
+      image: item.image,
+      image_large: item.image_large,
+      image_mobile: item.image_mobile
+    }));
+  })
 );
 
 export const ingredientsSlice = createSlice({
@@ -46,3 +60,4 @@ export const ingredientsSlice = createSlice({
 
 export const { getIngredientsSelector } = ingredientsSlice.selectors;
 export const ingredientsReducer = ingredientsSlice.reducer;
+export const initialIngredientsState = initialState;
