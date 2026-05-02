@@ -10,10 +10,11 @@ import {
 import * as helpers from '../../../utils/helpers';
 import { buns, sauces, mains } from '@test-data';
 import { TBun } from '@utils-types';
+import { expect, it, describe, jest } from '@jest/globals';
 
 let currentState: TConstructorState = { ...initialState };
 
-describe('Тест слайса конструктора бургеров', () => {
+describe('Тест constructor-slice', () => {
   beforeEach(() => {
     currentState = { ...initialState };
   });
