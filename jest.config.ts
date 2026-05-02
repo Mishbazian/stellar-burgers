@@ -12,7 +12,8 @@ const config: Config.InitialOptions = {
     '@utils-types': '<rootDir>/src/utils/types',
     '@api': '<rootDir>/src/utils/burger-api.ts',
     '@slices': '<rootDir>/src/services/slices',
-    '@selectors': '<rootDir>/src/services/selectors'
+    '@selectors': '<rootDir>/src/services/selectors',
+    '@test-data': '<rootDir>/__testdata__'
   }
 };
 export default config;
