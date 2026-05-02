@@ -2,18 +2,21 @@
 import '../support';
 
 import { TIngredient } from '../../src/utils/types';
+import { TIngredientsResponse } from '../../src/utils/burger-api';
 
 describe('Тест конструктора бургеров', () => {
-  let ingredientsData: { success: boolean; data: TIngredient[] } = {
+  let ingredientsData: TIngredientsResponse = {
     success: false,
     data: []
   };
+  let ingredients: TIngredient[];
   let mains: TIngredient[] = [];
   let buns: TIngredient[] = [];
   let sauces: TIngredient[] = [];
   let addedIngredients: TIngredient[] = [];
 
   beforeEach(() => {
+    ingredients = [];
     mains = [];
     buns = [];
     sauces = [];
@@ -21,11 +24,22 @@ describe('Тест конструктора бургеров', () => {
 
     cy.fixture('ingredients.json').then((data) => {
       ingredientsData = { ...data };
-      buns = [...ingredientsData.data.filter((item) => item.type === 'bun')];
-      sauces = [
-        ...ingredientsData.data.filter((item) => item.type === 'sauce')
-      ];
-      mains = [...ingredientsData.data.filter((item) => item.type === 'main')];
+      ingredients = ingredientsData.data.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        type: item.type,
+        proteins: item.proteins,
+        fat: item.fat,
+        carbohydrates: item.carbohydrates,
+        calories: item.calories,
+        price: item.price,
+        image: item.image,
+        image_large: item.image_large,
+        image_mobile: item.image_mobile
+      }));
+      buns = [...ingredients.filter((item) => item.type === 'bun')];
+      sauces = [...ingredients.filter((item) => item.type === 'sauce')];
+      mains = [...ingredients.filter((item) => item.type === 'main')];
 
       cy.intercept('GET', /\/ingredients$/, {
         statusCode: 200,
@@ -42,13 +56,13 @@ describe('Тест конструктора бургеров', () => {
       it('[#1.1]На страницу конструктора загружаются ингредиенты', () => {
         cy.get('[data-testid^="ingredient:"]').should(
           'have.length',
-          ingredientsData.data.length
+          ingredients.length
         );
       });
     });
     describe('[#2]Модальное окно', () => {
       it('[#2.1] Модальное окно открывается кликом на ингредиент и закрывается крестиком', () => {
-        const { _id } = ingredientsData.data[1];
+        const { _id } = ingredients[1];
         cy.get('[data-testid="modal"]').should('not.exist');
         cy.get(`[data-testid="ingredient:${_id}"]`).click();
         cy.get('[data-testid="modal"]').should('be.visible');
@@ -57,7 +71,7 @@ describe('Тест конструктора бургеров', () => {
       });
 
       it('[#2.2] Модальное окно открывается кликом на ингредиент и закрывается кликом на оверлей', () => {
-        const { _id } = ingredientsData.data[1];
+        const { _id } = ingredients[1];
         cy.get('[data-testid="modal"]').should('not.exist');
         cy.get(`[data-testid="ingredient:${_id}"]`).click();
         cy.get('[data-testid="modal:overlay"]').click('topLeft', {
@@ -75,7 +89,7 @@ describe('Тест конструктора бургеров', () => {
           carbohydrates,
           calories,
           image_large
-        } = ingredientsData.data[1];
+        } = ingredients[1];
         cy.get('[data-testid="modal"]').should('not.exist');
         cy.get(`[data-testid="ingredient:${_id}"]`).click();
         cy.get('[data-testid="modal"]')
@@ -200,7 +214,7 @@ describe('Тест конструктора бургеров', () => {
         //Добавляем булочку
         cy.addIngredient(buns[0]._id);
         //Добавляем остальные ингредиенты
-        ingredientsData.data
+        ingredients
           .filter((item) => item.type !== 'buns')
           .forEach((item) => {
             cy.addIngredient(item._id);
