@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { TBun, TConstructorIngredient, TIngredient } from '@utils-types';
-import { v4 as randomUuid } from 'uuid';
+import { getRandomId } from '../../../utils/helpers';
 
 export type TConstructorState = {
   bun: TBun | null;
@@ -25,7 +25,7 @@ export const constructorSlice = createSlice({
         }
       },
       prepare: (ingredient: TIngredient) => {
-        const id = randomUuid();
+        const id = getRandomId();
         return { payload: { ...ingredient, id } };
       }
     },
