@@ -96,11 +96,14 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier ./src --write",
-    "test": "npm run lint:fix && npm run format",
+    "check": "npm run lint:fix && npm run format",
     "prepare": "husky",
-    "commit": "npm run test && cz",
+    "commit": "npm run check && cz",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "test:coverage": "npm test -- --coverage"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "npm run lint",
