@@ -6,11 +6,13 @@ import {
 } from '@api';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TIngredient, TOrder, TOrdersData } from '@utils-types';
+
 type TOrderSliceState = TOrdersData & {
   isLoading: boolean;
   isSending: boolean;
   error: string | null;
   newOrder: TOrder | null;
+  newOrderError: string | null;
   userOrders: TOrder[];
 };
 
@@ -22,6 +24,7 @@ const initialState: TOrderSliceState = {
   isSending: false,
   error: null,
   newOrder: null,
+  newOrderError: null,
   userOrders: []
 };
 
@@ -37,7 +40,17 @@ export const createOrder = createAsyncThunk(
   'orders/create',
   async (data: TIngredient[]) =>
     orderBurgerApi(data.map((item) => item._id)).then((data) => {
-      const newOrder: TOrder = { ...data.order };
+      const { _id, status, name, createdAt, updatedAt, number, ingredients } =
+        data.order;
+      const newOrder: TOrder = {
+        _id,
+        status,
+        name,
+        createdAt,
+        updatedAt,
+        number,
+        ingredients: ingredients.map((item) => item._id)
+      };
       return newOrder;
     })
 );
@@ -106,9 +119,11 @@ export const ordersSlice = createSlice({
       })
       .addCase(createOrder.pending, (state) => {
         state.isSending = true;
+        state.newOrderError = null;
       })
-      .addCase(createOrder.rejected, (state) => {
+      .addCase(createOrder.rejected, (state, action) => {
         state.isSending = false;
+        state.newOrderError = action.error.message ?? null;
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.isSending = false;
@@ -126,3 +141,4 @@ export const {
 } = ordersSlice.selectors;
 
 export const { setUserOrders, clearNewOrder } = ordersSlice.actions;
+export const initialOrderState = initialState;
