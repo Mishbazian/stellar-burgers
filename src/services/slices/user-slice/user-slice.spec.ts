@@ -150,20 +150,18 @@ describe('Тест user-slice', () => {
       })
     );
 
-    const { testCaseRejected } = setAsyncActionTests({
-      slice: userSlice,
-      action: logoutUser,
-      initialState: {
-        ...initialUserState,
-        user: testUser,
-        logoutError: undefined
-      },
-      spyFn: 'logoutApi'
-    });
-
     it(
       '[#3.3] logoutUser.rejected записывает ошибку выхода и сбрасывает isLoading',
-      testCaseRejected({
+      setAsyncActionTests({
+        slice: userSlice,
+        action: logoutUser,
+        initialState: {
+          ...initialUserState,
+          user: testUser,
+          logoutError: undefined
+        },
+        spyFn: 'logoutApi'
+      }).testCaseRejected({
         mockRejectedValue: { message: testErrorMessage },
         expectedState: {
           ...initialUserState,
@@ -270,5 +268,57 @@ describe('Тест user-slice', () => {
         isInit: true
       });
     });
+  });
+  describe('[#6] updateUser корректно работает с хранилищем', () => {
+    const oldUserData: api.TRegisterData = {
+      name: 'Petr',
+      email: 'petr@example.com',
+      password: 'password'
+    };
+    const newAuthResponse: api.TAuthResponse = testAuthResponse;
+    const newUserData: TUser = testUser;
+    const startState: TUserState = { ...initialUserState, user: oldUserData };
+    const { testCaseFulfilled, testCasePending, testCaseRejected } =
+      setAsyncActionTests({
+        slice: userSlice,
+        action: updateUser,
+        actionArgs: newUserData,
+        initialState: startState,
+        spyFn: 'updateUserApi'
+      });
+
+    it(
+      '[#6.1] updateUser.pending устанавливает isLoading и сбрасывает ошибку обновления',
+      testCasePending({
+        expectedState: {
+          ...startState,
+          isLoading: true,
+          updateUserError: undefined
+        }
+      })
+    );
+    it(
+      '[#6.2] updateUser.fulfilled сохраняет корректные данные и сбрасывает isLoading',
+      testCaseFulfilled({
+        mockResolvedValue: newAuthResponse,
+        expectedState: {
+          ...startState,
+          user: newUserData,
+          isLoading: false,
+          updateUserError: undefined
+        }
+      })
+    );
+    it(
+      '[#6.3] updateUser.rejected сохраняет сообщение ошибки и сбрасывает isLoading',
+      testCaseRejected({
+        mockRejectedValue: { message: testErrorMessage },
+        expectedState: {
+          ...startState,
+          isLoading: false,
+          updateUserError: testErrorMessage
+        }
+      })
+    );
   });
 });
