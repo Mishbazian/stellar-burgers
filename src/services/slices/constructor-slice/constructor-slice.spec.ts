@@ -2,7 +2,7 @@ import {
   TConstructorState,
   constructorSlice,
   addItem,
-  initialState,
+  initialConstructorState as initialState,
   removeItem,
   moveItem,
   clearConstructor
