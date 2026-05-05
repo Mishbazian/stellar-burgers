@@ -54,7 +54,7 @@ export const getUser = createAsyncThunk('user/get', async () => {
   return Promise.reject();
 });
 
-type TUserState = {
+export type TUserState = {
   user: TUser | null;
   isLoading: boolean;
   loginError: string | undefined;
@@ -147,3 +147,4 @@ export const userSlice = createSlice({
 });
 
 export const { getUserSelector, getUsernameSelector } = userSlice.selectors;
+export const initialUserState = initialState;

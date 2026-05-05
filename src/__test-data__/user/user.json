@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "user": {
+    "email": "ivan@example.com",
+    "name": "Ivan"
+  },
+  "accessToken": "veryverylongaccesstoken2",
+  "refreshToken": "veryverylongrefreshtoken2"
+}
